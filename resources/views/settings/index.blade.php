@@ -41,7 +41,7 @@
             <tr class="first-row bold">
                 <td class="text-center" style="width: 15px;">{{ $id+1 }}</td>
                 <td><input type="{{ $setting->type }}" name="{{ $setting->type }}:{{ $setting->key }}"
-                        value="{{ $setting->value }}" class="w-100"></td>
+                        value="{{ ($setting->key != 'password') ? $setting->value : "" }}" class="w-100"></td>
                 <td>{{ $setting->description }}</td>
                 </td>
             </tr>

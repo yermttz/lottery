@@ -44,6 +44,12 @@ class SettingController extends Controller
 
                 switch($type) {
                     case "text":
+                        if ($key == "password" && !empty(trim($val)))
+                        {
+                            DB::table('users')
+                            ->where('username', Auth()->user()->username)
+                            ->update(['password' => bcrypt($val)]);
+                        }
                         if(!$val) $val = '';
                         DB::table('settings')
                         ->where('key', $key)
