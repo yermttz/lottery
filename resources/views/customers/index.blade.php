@@ -79,7 +79,8 @@
     @endphp
     <tbody class="tbody-header" onclick="window.location='/customers/{{ $customer->id}}';">
         <tr class="first-row bold">
-            <td class="text-center">{{ $id+1 }}</td>
+            <td class="text-center">{{ $id+1 }} <br> <a href="/customers/{{$customer->id}}/edit" style="color: red;"><i
+                        class="fa-solid fa-trash"></i></a></td>
             <td>{{ $customer->name }}</td>
             <td class="text-center">{{ round($customer->entires, 2) }}</td>
             <td class="text-center">{{ $customer->utility }}</td>

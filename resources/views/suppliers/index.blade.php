@@ -55,7 +55,8 @@
     @endphp
     <tbody class="tbody-header" onclick="window.location='/suppliers/{{ $supplier->id}}';">
         <tr class="first-row bold">
-            <td class="text-center" style="width: 15px;">{{ $id+1 }}</td>
+            <td class="text-center" style="width: 15px;">{{ $id+1 }} <br> <a href="/suppliers/{{$supplier->id}}/edit"
+                    style="color: red;"><i class="fa-solid fa-trash"></i></a></td>
             <td>{{ $supplier->name }}</td>
             <td class="text-center" style="width: 25px;">{{ $supplier->utility }}</td>
             <td class="text-center" style="width: 125px;">{{ date('d/m/y h:i A', strtotime($supplier->created_at)) }}

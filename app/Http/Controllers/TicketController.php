@@ -26,6 +26,7 @@ class TicketController extends Controller
                 DB::raw('(SELECT IFNULL(SUM(entires), 0) FROM entires WHERE ticketid=tickets.id) as total_entires'),
                 DB::raw('(SELECT IFNULL(SUM(fractions / tickets.fractions), 0) FROM entires WHERE ticketid=tickets.id) as total_fractions')
             )
+            ->where('tickets.active', 1)
             ->get();
         return view('tickets.index')->with([
             'tickets' => $tickets
@@ -39,9 +40,9 @@ class TicketController extends Controller
      */
     public function create()
     {
-        $suppliers = DB::table('suppliers')->get();
-        $lotteries = DB::table('lotteries')->get();
-        $customers = DB::table('customers')->get();
+        $suppliers = DB::table('suppliers')->where('active', 1)->get();
+        $lotteries = DB::table('lotteries')->where('active', 1)->get();
+        $customers = DB::table('customers')->where('active', 1)->get();
         return view('tickets.create')->with([
             'suppliers' => $suppliers,
             'lotteries' => $lotteries,
@@ -82,7 +83,7 @@ class TicketController extends Controller
             'fractions' => $request->fractions,
             'serie' => $request->serie,
             'emission' => $request->emission,
-            'active' => $request->has('active'),
+            'active' => 1, //$request->has('active'),
             'description' => $request->description,
             'created_by' => Auth()->user()->username
         ]); 

@@ -47,6 +47,7 @@ class CustomerController extends Controller
             DB::raw('(SELECT IFNULL(SUM(t.price * e.entires * t.fractions), 0) FROM tickets t LEFT JOIN entires e ON t.id=e.ticketid WHERE e.customerid=customers.id) as total_entires'),
             DB::raw('(SELECT IFNULL(SUM(t.price * e.fractions), 0) FROM tickets t LEFT JOIN entires e ON t.id=e.ticketid WHERE e.customerid=customers.id) as total_fractions'),
             DB::raw('(SELECT IFNULL(SUM((e.entires * t.fractions) + e.fractions), 0) FROM tickets t LEFT JOIN entires e ON t.id=e.ticketid WHERE e.customerid=customers.id) as all_fractions'))
+            ->where('customers.active', 1)
             ->get();
         // $customers = Customer::all();
         return view('customers.index')->with(['customers' => $customers]);
@@ -70,7 +71,7 @@ class CustomerController extends Controller
      */
     public function give(Request $request)
     {
-        $customers = DB::table('customers')->get();
+        $customers = DB::table('customers')->where('active', 1)->get();
         $tickets = DB::table('tickets')
             ->leftJoin('suppliers', 'tickets.supplierid', '=', 'suppliers.id')
             ->leftJoin('lotteries', 'tickets.lotteryid', '=', 'lotteries.id')            
@@ -81,7 +82,9 @@ class CustomerController extends Controller
                 'lotteries.name as lottery_name',
                 'lotteries.date as lottery_date',
                 DB::raw('(SELECT IFNULL(SUM(entires), 0) FROM entires WHERE ticketid=tickets.id) as entires'
-            ))->get();
+            ))
+            ->where('tickets.active', 1)
+            ->get();
         return view('customers.give')->with([
             'customers' => $customers,
             'tickets' => $tickets,
@@ -96,7 +99,8 @@ class CustomerController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function give_store(Request $request)
-    {                $rules = [
+    {
+        $rules = [
             'ticketid' => 'required',
             'customerid' => 'required'
         ];
@@ -167,7 +171,7 @@ class CustomerController extends Controller
             'entires' => $request->entires,
             'fractions' => $request->fractions,
             'action' => 'add',
-            'active' => $request->has('active'),
+            'active' => 1, //$request->has('active'),
             'description' => $request->description,
             'created_by' => Auth()->user()->username
         ]);
@@ -188,7 +192,7 @@ class CustomerController extends Controller
      */
     public function return(Request $request)
     {
-        $customers = DB::table('customers')->get();
+        $customers = DB::table('customers')->where('active', 1)->get();
         $tickets = DB::table('tickets')
             ->leftJoin('suppliers', 'tickets.supplierid', '=', 'suppliers.id')
             ->leftJoin('lotteries', 'tickets.lotteryid', '=', 'lotteries.id')            
@@ -199,7 +203,9 @@ class CustomerController extends Controller
                 'lotteries.name as lottery_name',
                 'lotteries.date as lottery_date',
                 DB::raw('(SELECT IFNULL(SUM(entires), 0) FROM entires WHERE ticketid=tickets.id) as entires'
-            ))->get();
+            ))
+            ->where('tickets.active', 1)
+            ->get();
         return view('customers.return')->with([
             'customers' => $customers,
             'tickets' => $tickets,
@@ -286,7 +292,7 @@ class CustomerController extends Controller
             'entires' => $request->entires * -1,
             'fractions' => $request->fractions * -1,
             'action' => 'del',
-            'active' => $request->has('active'),
+            'active' => 1, //$request->has('active'),
             'description' => $request->description,
             'created_by' => Auth()->user()->username
         ]);
@@ -311,7 +317,7 @@ class CustomerController extends Controller
         if(empty($request->get('c'))) {
             return redirect('customers');
         }
-        $customers = DB::table('customers')->where('id', $request->get('c'))->get();
+        $customers = DB::table('customers')->where('id', $request->get('c'))->where('active', 1)->get();
         $tickets = DB::table('tickets')
             ->leftJoin('suppliers', 'tickets.supplierid', '=', 'suppliers.id')
             ->leftJoin('lotteries', 'tickets.lotteryid', '=', 'lotteries.id')            
@@ -322,7 +328,9 @@ class CustomerController extends Controller
                 'lotteries.name as lottery_name',
                 'lotteries.date as lottery_date',
                 DB::raw('(SELECT IFNULL(SUM(entires), 0) FROM entires WHERE ticketid=tickets.id) as entires'
-            ))->get();
+            ))
+            ->where('active', 1)
+            ->get();
         return view('customers.pay')->with([
             'customers' => $customers,
             'tickets' => $tickets,
@@ -382,7 +390,7 @@ class CustomerController extends Controller
     public function store(Request $request)
     {        
         $rules = [
-            'name' => 'required|max:255|unique:customers',
+            'name' => 'required|max:255|unique:customers,name,0,active',
             'utility' => 'required|numeric|between:1,100',
         ];
         $messages = [
@@ -398,7 +406,7 @@ class CustomerController extends Controller
         $customer = Customer::create([
             'name' => $request->name,
             'utility' => $request->utility,
-            'active' => $request->has('active'),
+            'active' => 1, //$request->has('active'),
             'balance' => 0,
             'created_by' => Auth()->user()->username
         ]);
@@ -482,7 +490,8 @@ class CustomerController extends Controller
      */
     public function edit($id)
     {
-        //
+        $customer = Customer::find($id);
+        return view('customers.delete')->with(['customer' => $customer]);
     }
 
     /**
@@ -505,6 +514,13 @@ class CustomerController extends Controller
      */
     public function destroy($id)
     {
-        //
+        DB::table('customers')
+        ->where('id', $id)
+        ->update(['active' => 0]);
+
+        return redirect('/customers')->with([
+            'message' => 'Cliente eliminado correctamente...',
+            'type' => 'success'
+        ]);
     }
 }

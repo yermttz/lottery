@@ -45,7 +45,9 @@
     @foreach ($lotteries as $id => $lottery)
     <tbody class="tbody-header">
         <tr class="first-row bold">
-            <td class="text-center">{{ $id+1 }}</td>
+            <td class="text-center">{{ $id+1 }} <br> <a href="/lotteries/{{$lottery->id}}/edit" style="color: red;"><i
+                        class="fa-solid fa-trash"></i></a>
+            </td>
             <td>{{ $lottery->name }}</td>
             <td class="text-center">{{ dateEs(date('l d-m-Y', strtotime($lottery->date))) }}</td>
             <td class="text-center">{{ date('d-m-Y h:i a', strtotime($lottery->created_at)) }}

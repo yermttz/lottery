@@ -67,7 +67,7 @@
             </div>
             @enderror
         </div>
-        <button type="submit" class="rssbanner-btn
+        <button type="submit" class="rssbanner-btn w-100 text-uppercase">Devolver Cuota</button>
 </div>
 
 @endsection

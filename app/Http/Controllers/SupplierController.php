@@ -25,6 +25,7 @@ class SupplierController extends Controller
             DB::raw('(SELECT IFNULL(SUM(t.price * (e.entires + (e.fractions / t.fractions))), 0) FROM tickets t LEFT JOIN entires e ON t.id=e.ticketid WHERE t.supplierid=suppliers.id) as total_entires'),
             DB::raw('(SELECT IFNULL(SUM(t.price * e.fractions), 0) FROM tickets t LEFT JOIN entires e ON t.id=e.ticketid WHERE t.supplierid=suppliers.id) as total_fractions'),
             DB::raw('(SELECT IFNULL(SUM((e.entires * t.fractions) + e.fractions), 0) FROM tickets t LEFT JOIN entires e ON t.id=e.ticketid WHERE t.supplierid=suppliers.id) as all_fractions'))
+            ->where('active', 1)
             ->get();
         // $suppliers = Supplier::all();
         return view('suppliers.index')->with('suppliers', $suppliers);
@@ -49,7 +50,7 @@ class SupplierController extends Controller
     public function store(Request $request)
     {
         $rules = [
-            'name' => 'required|max:255|unique:suppliers',
+            'name' => 'required|max:255|unique:suppliers,name,0,active',
             'utility' => 'required|numeric|between:1,100',
         ];
         $messages = [
@@ -65,7 +66,7 @@ class SupplierController extends Controller
         $supplier = Supplier::create([
             'name' => $request->name,
             'utility' => $request->utility,
-            'active' => $request->has('active'),
+            'active' => 1, //$request->has('active'),
             'description' => $request->description,
             'created_by' => Auth()->user()->username
         ]);  
@@ -112,7 +113,8 @@ class SupplierController extends Controller
      */
     public function edit($id)
     {
-        //
+        $supplier = Supplier::find($id);
+        return view('suppliers.delete')->with(['supplier' => $supplier]);
     }
 
     /**
@@ -135,6 +137,13 @@ class SupplierController extends Controller
      */
     public function destroy($id)
     {
-        //
+        DB::table('suppliers')
+        ->where('id', $id)
+        ->update(['active' => 0]);
+
+        return redirect('/suppliers')->with([
+            'message' => 'Proveedor eliminado correctamente...',
+            'type' => 'success'
+        ]);
     }
 }

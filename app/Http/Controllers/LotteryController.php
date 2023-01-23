@@ -21,6 +21,7 @@ class LotteryController extends Controller
             DB::raw('(SELECT IFNULL(SUM(entires), 0) FROM entires WHERE ticketid=lotteries.id) as entires'),
             DB::raw('(SELECT IFNULL(SUM(e.fractions / t.fractions), 0) FROM entires e LEFT JOIN tickets t ON t.id=e.ticketid WHERE e.ticketid=lotteries.id) as fractions')
             )
+            ->where('active', 1)
             ->get();
         // $lotteries = Lottery::all();
         return view('lotteries.index')->with('lotteries', $lotteries);
@@ -58,7 +59,7 @@ class LotteryController extends Controller
         $supplier = Lottery::create([
             'name' => $request->name,
             'date' => $request->date,
-            'active' => $request->has('active'),
+            'active' => 1, //$request->has('active'),
             'created_by' => Auth()->user()->username
         ]);
         
@@ -76,7 +77,6 @@ class LotteryController extends Controller
      */
     public function show($id)
     {
-        //
     }
 
     /**
@@ -87,7 +87,8 @@ class LotteryController extends Controller
      */
     public function edit($id)
     {
-        //
+        $lottery = Lottery::find($id);
+        return view('lotteries.delete')->with(['lottery' => $lottery]);        
     }
 
     /**
@@ -110,6 +111,13 @@ class LotteryController extends Controller
      */
     public function destroy($id)
     {
-        //
+        DB::table('lotteries')
+        ->where('id', $id)
+        ->update(['active' => 0]);
+
+        return redirect('/lotteries')->with([
+            'message' => 'Lotería eliminada correctamente...',
+            'type' => 'success'
+        ]);
     }
 }
