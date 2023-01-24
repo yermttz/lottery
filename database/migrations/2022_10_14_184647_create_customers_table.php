@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('name');
             $table->decimal('utility');
             $table->boolean('active');
-            $table->decimal('balance');
+            $table->decimal('balance', 18, 2);
             $table->text('description')->nullable();
             $table->string('created_by');
             $table->string('updated_by')->nullable();

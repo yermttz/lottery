@@ -34,7 +34,8 @@
                     {{ dateEs(date('l d-m-Y',
                     strtotime($ticket->lottery_date))) }}
                     ({{ $ticket->lottery_name }})
-                    (Fracciones: {{ $ticket->fractions }} = ¢{{ number_format($ticket->price, 2) }})
+                    (Enteros: {{ $ticket->entires }}, Fracciones: {{ $ticket->fractions }} = ¢{{
+                    number_format($ticket->price, 2) }})
                     {{ ($ticket->serie) ? '(Serie: '.$ticket->serie.')' : '' }}
                     {{ ($ticket->emission) ? '(Emisión: '.$ticket->emission.')' : '' }}
                 </option>

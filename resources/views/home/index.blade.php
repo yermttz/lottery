@@ -74,7 +74,8 @@
                         <i class="fa-solid fa-circle-dollar-to-slot"></i>
                         Enteros
                         <br>
-                        <span style="font-size: 25px;"> {{ $tickets->count->tickets * 100 }} </span>
+                        <span style="font-size: 25px;"> {{ $tickets->count->entires }}
+                        </span>
                     </div>
                 </div>
             </li>
@@ -84,8 +85,8 @@
                         <i class="fa-solid fa-stopwatch"></i>
                         Pendientes
                         <br>
-                        <span style="font-size: 25px;"> {{ round(($tickets->count->tickets * 100) -
-                            $tickets->info->all_entires, 2) }} </span>
+                        <span style="font-size: 25px;"> {{ round($tickets->count->entires - $tickets->info->all_entires,
+                            2) }} </span>
                     </div>
                 </div>
             </li>

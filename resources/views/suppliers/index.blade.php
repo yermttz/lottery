@@ -50,7 +50,7 @@
     @endphp
     @foreach ($suppliers as $id => $supplier)
     @php
-    $int_total = $supplier->count_price * 100;
+    $int_total = $supplier->count_price;
     $int_neto = $int_total - ($int_total * $supplier->utility / 100);
     @endphp
     <tbody class="tbody-header" onclick="window.location='/suppliers/{{ $supplier->id}}';">
@@ -65,7 +65,8 @@
         <tr>
             <td></td>
             <td colspan="3">
-                <b>Total cuotas:</b> {{ $supplier->count }}
+                <b>Total cuotas:</b> {{ $supplier->count }} <i class="fa-solid fa-minus"></i> <b>Total enteros:</b> {{
+                $supplier->count_entires }}
                 <br>
                 <b>Monto total:</b> {{ number_format($int_total, 2) }}
                 <i class="fa-solid fa-minus"></i>
@@ -73,7 +74,8 @@
                 <br>
                 <b>Enteros entregados:</b> {{ $supplier->entires + $supplier->fractions }}
                 <i class="fa-solid fa-minus"></i>
-                <b>Enteros pendientes:</b> {{ (100 * $supplier->count) - ($supplier->entires + $supplier->fractions) }}
+                <b>Enteros pendientes:</b> {{ $supplier->count_entires - ($supplier->entires +
+                $supplier->fractions) }}
                 <br>
                 <b>Monto entregado:</b> {{ number_format($supplier->total_entires, 2) }}
                 <i class="fa-solid fa-minus"></i>

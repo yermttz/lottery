@@ -48,7 +48,10 @@
     @foreach ($tickets as $id => $ticket)
     <tbody>
         <tr class="first-row bold">
-            <td class="text-center">{{ $id+1 }}</td>
+            <td class="text-center">{{ $id+1 }} {!! (($ticket->total_entires + $ticket->total_fractions)>0) ? '' :
+                '<br>
+                <a href="/tickets/'.$ticket->id.'/edit" style="color: red;"><i class="fa-solid fa-trash"></i></a>' !!}
+            </td>
             <td>{{ $ticket->supplier_name }}</td>
             <td class="text-center">{{ $ticket->lottery_name }}</td>
             <td class="text-center">{{ $ticket->fractions }}</td>
@@ -58,17 +61,21 @@
         <tr>
             <td></td>
             <td colspan="5">
-                <b>Precio total de la cuota:</b> ¢ {{ number_format($ticket->price * $ticket->fractions * 100, 2) }}
+                <b>Total enteros:</b> {{ $ticket->entires }}
                 <br>
-                <b>Precio neto:</b> ¢ {{ number_format(($ticket->price * $ticket->fractions * 100) - ($ticket->price *
-                $ticket->fractions * 100 * ($ticket->supplier_utility / 100)), 2) }}
+                <b>Precio total de la cuota:</b> ¢ {{ number_format($ticket->price * $ticket->fractions *
+                $ticket->entires, 2) }}
+                <br>
+                <b>Precio neto:</b> ¢ {{ number_format(($ticket->price * $ticket->fractions * $ticket->entires) -
+                ($ticket->price *
+                $ticket->fractions * $ticket->entires * ($ticket->supplier_utility / $ticket->entires)), 2) }}
                 <br>
                 <b>Ganancia:</b> ¢ {{ number_format($ticket->price *
-                $ticket->fractions * 100 * ($ticket->supplier_utility / 100), 2) }}
+                $ticket->fractions * $ticket->entires * ($ticket->supplier_utility / $ticket->entires), 2) }}
                 <br>
                 <b>Enteros entregados:</b> {{ $ticket->total_entires + $ticket->total_fractions }}
                 <i class="fa-solid fa-minus"></i>
-                <b>Enteros pendientes:</b> {{ 100 - ($ticket->total_entires + $ticket->total_fractions) }}
+                <b>Enteros pendientes:</b> {{ $ticket->entires - ($ticket->total_entires + $ticket->total_fractions) }}
                 <br>
                 <div class="showonmobile"><b>Creado:</b> {{ date('d/m/y h:i A', strtotime($ticket->created_at)) }}</div>
             </td>

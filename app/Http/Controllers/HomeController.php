@@ -18,7 +18,8 @@ class HomeController extends Controller
         $tickets["count"] = DB::table('tickets')
             ->select(                
             DB::raw('IFNULL(COUNT(tickets.id), 0) as tickets'),
-            DB::raw('IFNULL(SUM(tickets.fractions), 0) as fractions')
+            DB::raw('IFNULL(SUM(tickets.fractions), 0) as fractions'),
+            DB::raw('IFNULL(SUM(tickets.entires), 0) as entires')
             )
             ->first();
 

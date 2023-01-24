@@ -18,6 +18,7 @@ return new class extends Migration
             $table->biginteger('supplierid');
             $table->biginteger('lotteryid');
             $table->decimal('price');
+            $table->integer('entires');
             $table->integer('fractions');
             $table->string('serie')->nullable();
             $table->string('emission')->nullable();

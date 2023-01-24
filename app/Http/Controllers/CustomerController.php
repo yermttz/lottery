@@ -81,7 +81,7 @@ class CustomerController extends Controller
                 'suppliers.utility as supplier_utility', 
                 'lotteries.name as lottery_name',
                 'lotteries.date as lottery_date',
-                DB::raw('(SELECT IFNULL(SUM(entires), 0) FROM entires WHERE ticketid=tickets.id) as entires'
+                DB::raw('(SELECT IFNULL(SUM(entires), 0) FROM entires WHERE ticketid=tickets.id) as entires_count'
             ))
             ->where('tickets.active', 1)
             ->get();
@@ -110,11 +110,17 @@ class CustomerController extends Controller
         ];
         $this->validate($request, $rules, $messages);
         
+        $ticket_entires = DB::table('tickets')
+        ->select('entires')
+        ->where('id', $request->ticketid)
+        ->first();
+        $ticket_entires = $ticket_entires->entires;
+
         if(empty($request->entires)) {
             $request->entires = 0;
-        } else if(!is_numeric($request->entires) || $request->entires < 0 || $request->entires > 100) {
+        } else if(!is_numeric($request->entires) || $request->entires < 0 || $request->entires > $ticket_entires) {
             return redirect('/customers/give')->withErrors([
-                'entires' => 'Los enteros deben ser un número entre 0 a 100...'
+                'entires' => 'Los enteros deben ser un número entre 0 a '.$ticket_entires.'...'
             ])->withInput();
         }
         $request->entires = floor($request->entires);
@@ -152,15 +158,15 @@ class CustomerController extends Controller
         $total_entregados = $entires->entires + ($entires->fractions / $entires->num_fractions);
         $total_nuevo = $request->entires + ($request->fractions / $entires->num_fractions);
 
-        if($total_entregados + $total_nuevo > 100) {
-            if($request->entires > (100 - $total_entregados)) {
+        if($total_entregados + $total_nuevo > $ticket_entires) {
+            if($request->entires > ($ticket_entires - $total_entregados)) {
                 return redirect('/customers/give')->withErrors([
                     'entires' => 'Cantidad de enteros disponibles: '.
-                    (100 - $total_entregados).' ...'
+                    ($ticket_entires - $total_entregados).' ...'
                 ])->withInput();
             } else {
                 return redirect('/customers/give')->withErrors([
-                    'fractions' => 'Cantidad de fracciones disponibles: '.(((100 - $total_entregados) * 5) - ($request->entires * 5)).' ...'
+                    'fractions' => 'Cantidad de fracciones disponibles: '.((($ticket_entires - $total_entregados) * 5) - ($request->entires * 5)).' ...'
                 ])->withInput();
             }
         }
@@ -202,7 +208,7 @@ class CustomerController extends Controller
                 'suppliers.utility as supplier_utility', 
                 'lotteries.name as lottery_name',
                 'lotteries.date as lottery_date',
-                DB::raw('(SELECT IFNULL(SUM(entires), 0) FROM entires WHERE ticketid=tickets.id) as entires'
+                DB::raw('(SELECT IFNULL(SUM(entires), 0) FROM entires WHERE ticketid=tickets.id) as entires_count'
             ))
             ->where('tickets.active', 1)
             ->get();
@@ -232,11 +238,17 @@ class CustomerController extends Controller
         ];
         $this->validate($request, $rules, $messages);
                    
+         $ticket_entires = DB::table('tickets')
+        ->select('entires')
+        ->where('id', $request->ticketid)
+        ->first();
+        $ticket_entires = $ticket_entires->entires;
+        
         if(empty($request->entires)) {
             $request->entires = 0;
-        } else if(!is_numeric($request->entires) || $request->entires < 0 || $request->entires > 100) {
+        } else if(!is_numeric($request->entires) || $request->entires < 0 || $request->entires > $ticket_entires) {
             return redirect('/customers/give')->withErrors([
-                'entires' => 'Los enteros deben ser un número entre 0 a 100...'
+                'entires' => 'Los enteros deben ser un número entre 0 a '.$ticket_entires.'...'
             ])->withInput();
         }
         $request->entires = floor($request->entires);

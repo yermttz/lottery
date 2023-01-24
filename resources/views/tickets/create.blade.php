@@ -50,6 +50,16 @@
             @enderror
         </div>
         <div class="form-floating mb-3">
+            <input type="number" class="form-control" name="entires" id="entires" placeholder="# Fracciones"
+                value="{{ empty(old('entires')) ? 100 : old('entires') }}" step=".01">
+            <label for="entires" class="form-label"># Enteros</label>
+            @error('entires')
+            <div class="alert alert-danger p-1 mt-1">
+                ERROR: {{ $errors->first('entires') }}
+            </div>
+            @enderror
+        </div>
+        <div class="form-floating mb-3">
             <input type="number" class="form-control" name="fractions" id="fractions" placeholder="# Fracciones"
                 value="{{ old('fractions') }}" step=".01">
             <label for="fractions" class="form-label"># Fracciones</label>

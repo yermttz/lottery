@@ -40,7 +40,7 @@
     @endphp
     @foreach ($tickets as $id => $ticket)
     @php
-    $int_total = $ticket->price * $ticket->fractions * 100;
+    $int_total = $ticket->price * $ticket->fractions * $ticket->entires;
     $int_total_neto = $int_total - ($int_total * $ticket->supplier_utility / 100);
     $int_give = ($ticket->total_entires + $ticket->total_fractions) * $ticket->price * $ticket->fractions;
     @endphp
@@ -56,13 +56,15 @@
         <tr>
             <td></td>
             <td colspan="6">
+                <b>Total enteros:</b> {{ $ticket->entires }}
+                <br>
                 <b>Precio total:</b> ¢ {{ number_format($int_total, 2) }}
                 <i class="fa-solid fa-minus"></i>
                 <b>Precio neto:</b> ¢ {{ number_format($int_total_neto, 2) }}
                 <br>
                 <b>Enteros entregados:</b> {{ $ticket->total_entires + $ticket->total_fractions }}
                 <i class="fa-solid fa-minus"></i>
-                <b>Enteros pendientes:</b> {{ 100 - ($ticket->total_entires + $ticket->total_fractions) }}
+                <b>Enteros pendientes:</b> {{ $ticket->entires - ($ticket->total_entires + $ticket->total_fractions) }}
                 <br>
                 <b>Monto entregado:</b> {{ number_format($int_give, 2) }}
                 <i class="fa-solid fa-minus"></i>

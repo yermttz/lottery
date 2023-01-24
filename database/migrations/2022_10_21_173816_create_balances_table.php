@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer('appliedid');
             $table->timestamp('date');
             $table->integer('type');
-            $table->decimal('amount');
+            $table->decimal('amount', 18, 2);
             $table->text('description')->nullable();
             $table->string('created_by');
             $table->string('updated_by')->nullable();

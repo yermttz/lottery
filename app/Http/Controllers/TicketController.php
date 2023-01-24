@@ -62,6 +62,7 @@ class TicketController extends Controller
             'supplierid' => 'required',
             'lotteryid' => 'required',
             'price' => 'required|numeric|min:1',
+            'entires' => 'required|numeric|min:1',
             'fractions' => 'required|numeric|min:1'
         ];
         $messages = [
@@ -70,6 +71,9 @@ class TicketController extends Controller
             'price.required' => 'Agrega un precio de fracción...',
             'price.min' => 'Ingrese un precio válido...',
             'price.numeric' => 'El precio debe ser un número...',
+            'entires.required' => 'Agrega el número de enteros...',
+            'entires.min' => 'Ingrese un número de enteros válido...',
+            'entires.numeric' => 'Los enteros debe ser un número...',
             'fractions.required' => 'Agrega el número de fracciones...',
             'fractions.min' => 'Ingrese un número de fracción válido...',
             'fractions.numeric' => 'Las fracciones debe ser un número...'
@@ -80,6 +84,7 @@ class TicketController extends Controller
             'supplierid' => $request->supplierid,
             'lotteryid' => $request->lotteryid,
             'price' => $request->price,
+            'entires' => $request->entires,
             'fractions' => $request->fractions,
             'serie' => $request->serie,
             'emission' => $request->emission,
@@ -113,7 +118,8 @@ class TicketController extends Controller
      */
     public function edit($id)
     {
-        //
+        $ticket = Ticket::find($id);
+        return view('tickets.delete')->with(['ticket' => $ticket]);
     }
 
     /**
@@ -136,6 +142,13 @@ class TicketController extends Controller
      */
     public function destroy($id)
     {
-        //
+        DB::table('tickets')
+        ->where('id', $id)
+        ->update(['active' => 0]);
+
+        return redirect('/tickets')->with([
+            'message' => 'Cuota eliminada correctamente...',
+            'type' => 'success'
+        ]);
     }
 }

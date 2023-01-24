@@ -23,6 +23,52 @@ return new class extends Migration
             $table->string('updated_by')->nullable();
             $table->timestamps();
         });
+        
+        // Insert some stuff
+        DB::table('settings')->insert(
+            array(
+                [
+                    'type' => 'text',
+                    'key' => 'title',
+                    'value' => 'Titulo',
+                    'description' => 'Título del Sistema',
+                    'created_by' => 'system',
+                    'updated_by' => date('Y-m-d H:i:s')
+                ],
+                [
+                    'type' => 'file',
+                    'key' => 'logo',
+                    'value' => 'SinLogo',
+                    'description' => 'Logo del Sistema',
+                    'created_by' => 'system',
+                    'updated_by' => date('Y-m-d H:i:s')
+                ],
+                [
+                    'type' => 'text',
+                    'key' => 'description',
+                    'value' => 'Descripción',
+                    'description' => 'Descripción del Sistema',
+                    'created_by' => 'system',
+                    'updated_by' => date('Y-m-d H:i:s')
+                ],
+                [
+                    'type' => 'text',
+                    'key' => 'description2',
+                    'value' => 'Descripción',
+                    'description' => 'Descripción del Sistema2',
+                    'created_by' => 'system',
+                    'updated_by' => date('Y-m-d H:i:s')
+                ],
+                [
+                    'type' => 'text',
+                    'key' => 'password',
+                    'value' => '',
+                    'description' => 'Cambiar Clave',
+                    'created_by' => 'system',
+                    'updated_by' => date('Y-m-d H:i:s')
+                ]
+            )
+        );
     }
 
     /**

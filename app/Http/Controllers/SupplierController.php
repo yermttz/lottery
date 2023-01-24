@@ -18,11 +18,12 @@ class SupplierController extends Controller
         $suppliers = DB::table('suppliers')            
             ->select('suppliers.*', 
             DB::raw('(SELECT IFNULL(COUNT(id), 0) FROM tickets WHERE supplierid=suppliers.id) as count'),
-            DB::raw('(SELECT IFNULL(SUM(fractions * price), 0) FROM tickets WHERE supplierid=suppliers.id) as count_price'),
+            DB::raw('(SELECT IFNULL(SUM(entires), 0) FROM tickets WHERE supplierid=suppliers.id) as count_entires'),
+            DB::raw('(SELECT IFNULL(SUM(fractions * price * entires), 0) FROM tickets WHERE supplierid=suppliers.id) as count_price'),
             DB::raw('(SELECT IFNULL(SUM(e.entires), 0) FROM entires e LEFT JOIN tickets t ON e.ticketid=t.id WHERE t.supplierid=suppliers.id) as entires'),
             DB::raw('(SELECT IFNULL(SUM(e.fractions / t.fractions), 0) FROM entires e LEFT JOIN tickets t ON e.ticketid=t.id WHERE t.supplierid=suppliers.id) as fractions'),
 
-            DB::raw('(SELECT IFNULL(SUM(t.price * (e.entires + (e.fractions / t.fractions))), 0) FROM tickets t LEFT JOIN entires e ON t.id=e.ticketid WHERE t.supplierid=suppliers.id) as total_entires'),
+            DB::raw('(SELECT IFNULL(SUM(t.price * (e.fractions + (e.entires * t.fractions))), 0) FROM entires e LEFT JOIN tickets t ON t.id=e.ticketid WHERE t.supplierid=suppliers.id) as total_entires'),
             DB::raw('(SELECT IFNULL(SUM(t.price * e.fractions), 0) FROM tickets t LEFT JOIN entires e ON t.id=e.ticketid WHERE t.supplierid=suppliers.id) as total_fractions'),
             DB::raw('(SELECT IFNULL(SUM((e.entires * t.fractions) + e.fractions), 0) FROM tickets t LEFT JOIN entires e ON t.id=e.ticketid WHERE t.supplierid=suppliers.id) as all_fractions'))
             ->where('active', 1)

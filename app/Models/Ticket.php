@@ -13,6 +13,7 @@ class Ticket extends Model
         'supplierid',
         'lotteryid',
         'price',
+        'entires',
         'fractions',
         'serie',
         'emission',
