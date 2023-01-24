@@ -21,6 +21,7 @@ class HomeController extends Controller
             DB::raw('IFNULL(SUM(tickets.fractions), 0) as fractions'),
             DB::raw('IFNULL(SUM(tickets.entires), 0) as entires')
             )
+            ->where('active', 1)
             ->first();
 
         $tickets["info"] = DB::table('tickets')      
