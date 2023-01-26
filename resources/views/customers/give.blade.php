@@ -33,7 +33,7 @@
                 <option value="{{ $ticket->id }}" {{ old('ticketid')==$ticket->id ? 'selected' : '' }}>
                     {{ dateEs(date('l d-m-Y',
                     strtotime($ticket->lottery_date))) }}
-                    ({{ $ticket->lottery_name }})
+                    ({{ $ticket->supplier_name.' - '.$ticket->lottery_name }})
                     (Enteros: {{ $ticket->entires }}, Disponibles: {{$ticket->entires - $ticket->entires_count}},
                     Fracciones: {{ $ticket->fractions }} = ¢{{
                     number_format($ticket->price, 2) }})
