@@ -18,8 +18,8 @@ class LotteryController extends Controller
         $lotteries = DB::table('lotteries')            
             ->select('lotteries.*', 
             DB::raw('(SELECT IFNULL(COUNT(id), 0) FROM tickets WHERE lotteryid=lotteries.id) as count'),
-            DB::raw('(SELECT IFNULL(SUM(entires), 0) FROM entires WHERE ticketid=lotteries.id) as entires'),
-            DB::raw('(SELECT IFNULL(SUM(e.fractions / t.fractions), 0) FROM entires e LEFT JOIN tickets t ON t.id=e.ticketid WHERE e.ticketid=lotteries.id) as fractions')
+            DB::raw('(SELECT IFNULL(SUM(e.entires), 0) FROM entires e LEFT JOIN tickets t ON e.ticketid=t.id WHERE t.lotteryid=lotteries.id) as entires'),
+            DB::raw('(SELECT IFNULL(SUM(e.fractions / t.fractions), 0) FROM entires e LEFT JOIN tickets t ON t.id=e.ticketid WHERE t.lotteryid=lotteries.id) as fractions')
             )
             ->where('active', 1)
             ->get();
